@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
@@ -11,7 +11,9 @@ contract CocoToken is ERC20Capped, ERC20Burnable {
     address payable public owner;
     uint256 public blockReward;
 
-    constructor (uint256 cap, uint256 reward) ERC20("CocoToken", "CCT") ERC20Capped(cap * (10 ** decimals())){
+    constructor (uint256 cap, uint256 reward)
+    ERC20("CocoToken", "CCT")
+    ERC20Capped(cap * (10 ** decimals())) {
         owner = payable(msg.sender);
         blockReward = reward * (10 ** decimals());
         _mint(owner, 70000000 * (10 ** decimals()));
