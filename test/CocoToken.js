@@ -1,11 +1,13 @@
 const CocoToken = artifacts.require("CocoToken");
 
+const addedZeros = "0".repeat(18);
+
 contract("CocoToken", (accounts) => {
     let token;
     let owner;
     let addr1;
     let addr2;
-    let tokenCap = 100;
+    let tokenCap = 100000000;
     let tokenBlockReward = 50;
 
     beforeEach(async () => {
@@ -20,19 +22,18 @@ contract("CocoToken", (accounts) => {
     it("should have the correct name and symbol", async () => {
         const name = await token.name();
         const symbol = await token.symbol();
-        console.log(name, symbol);
         assert.equal(name, "CocoToken", "Token name should be CocoToken");
         assert.equal(symbol, "CCT", "Token symbol should be CCT");
     });
 
     it("should assign the initial supply to the owner", async () => {
         const ownerBalance = await token.balanceOf(owner);
-        assert.equal(ownerBalance.toString(), "70000000", "Owner should have 70000000 tokens");
+        assert.equal(ownerBalance.toString(), "70000000" + addedZeros, "Owner should have 70000000 tokens");
     });
 
     it("should set max capped supply", async () => {
         const cap = await token.cap();
-        assert.equal(cap.toString(), tokenCap.toString(), "Max cap should be 100000000 tokens");
+        assert.equal(cap.toString(), tokenCap.toString() + addedZeros, "Max cap should be 100000000 tokens");
     });
 
     it("should allow transfer of tokens", async () => {
@@ -42,8 +43,8 @@ contract("CocoToken", (accounts) => {
         const balance1 = await token.balanceOf(owner);
         const balance2 = await token.balanceOf(addr1);
         
-        assert.equal(balance1.toString(), "69999900", "Owner should have 69999900 tokens left");
-        assert.equal(balance2.toString(), "100", "Recipient should have 100 tokens");
+        assert.equal(balance1.toString(), "69999900" + addedZeros, "Owner should have 69999900 tokens left");
+        assert.equal(balance2.toString(), "100" + addedZeros, "Recipient should have 100 tokens");
     });
 
     it("should fail to transfer tokens if the sender has insufficient balance", async () => {
@@ -51,7 +52,7 @@ contract("CocoToken", (accounts) => {
         
         // Attempt to transfer more tokens than the owner has
         try {
-            await token.transfer(addr1, initialBalance.toNumber() + 1); // Try to transfer more than available
+            await token.transfer(addr1, initialBalance + 1); // Try to transfer more than available
             assert.fail("The transfer should have failed due to insufficient balance");
         } catch (error) {
             assert(

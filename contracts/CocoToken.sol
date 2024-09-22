@@ -30,6 +30,10 @@ contract CocoToken is ERC20Capped, ERC20Burnable {
         super._update(from, to, value);
     }
 
+    function transfer(address to, uint256 value) public virtual override(ERC20) returns(bool){
+        return super.transfer(to, value * (10 ** decimals()));
+    }
+
     function setBlockReward (uint256 reward) public onlyOwner {
         blockReward = reward * (10 ** decimals());
     }
